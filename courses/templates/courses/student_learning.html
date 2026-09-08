@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+{{ course.title }} | Learning
+{% endblock %}
+     {% block extra_css %}
+     <link rel="stylesheet" href="{% static 'css/student_learning.css' %}">
+     {% endblock %}
+     
+{% block content %}
+
+<div class="learning-page">
+
+<!-- COURSE HEADER -->
+<div class="learning-header">
+    <h1>{{ course.title }}</h1>
+
+    <p>
+        {{ course.description }}
+    </p>
+</div>
+
+
+<div class="learning-container">
+
+    <!-- LESSON SIDEBAR -->
+    <aside class="lesson-sidebar">
+
+        <h2>Course Lessons</h2>
+
+        {% for lesson in lessons %}
+
+            <a href="?lesson={{ lesson.id }}"
+               class="lesson-link">
+
+                <span class="lesson-number">
+                    {{ forloop.counter }}
+                </span>
+
+                <span>
+                    {{ lesson.title }}
+                </span>
+
+            </a>
+
+        {% empty %}
+
+            <p>No lessons available yet.</p>
+
+        {% endfor %}
+
+    </aside>
+
+
+    <!-- LESSON CONTENT -->
+    <main class="lesson-content">
+
+        {% if selected_lesson %}
+
+            <h2>{{ selected_lesson.title }}</h2>
+
+            <div class="lesson-text">
+                {{ selected_lesson.content|linebreaks }}
+            </div>
+
+            <button class="complete-btn">
+                Mark Lesson as Complete
+            </button>
+
+        {% else %}
+
+            <div class="no-lesson">
+
+                <h2>Start Learning</h2>
+
+                <p>
+                    Select a lesson from the left side to start learning.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+</div>
+
+</div>
+
+{% endblock %}

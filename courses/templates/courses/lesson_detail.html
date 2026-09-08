@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ lesson.title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="lesson-detail-page">
+
+
+<h1>{{ lesson.title }}</h1>
+
+<p>
+    Course:
+    <a href="{% url 'course_detail' course_id=lesson.course_id %}">
+        {{ lesson.course.title }}
+    </a>
+</p>
+
+<div class="lesson-content">
+    {{ lesson.content|linebreaks }}
+</div>
+
+<div class="lesson-actions">
+
+    <a href="{% url 'lesson_update' lesson_id=lesson.pk %}">
+        Edit Lesson
+    </a>
+
+    <a href="{% url 'lesson_delete' lesson_id=lesson.pk %}">
+        Delete Lesson
+    </a>
+
+    <a href="{% url 'course_detail' course_id=lesson.course_id %}">
+        ← Back to Course
+    </a>
+
+</div>
+
+
+</div>
+
+{% endblock %}

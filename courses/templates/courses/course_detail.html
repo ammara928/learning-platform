@@ -1,0 +1,674 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ course.title }} | Learning Platform
+{% endblock title %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/course_detail.css' %}">
+{% endblock extra_css %}
+
+
+{% block content %}
+
+<div class="course-detail-page">
+
+    <!-- BACK BUTTON -->
+
+    <div class="course-page-container">
+
+        <a href="{% url 'course_list' %}" class="back-link">
+            ← Back to Courses
+        </a>
+
+
+        <!-- =========================================
+             MAIN COURSE CARD
+        ========================================== -->
+
+        <section class="course-main-card">
+
+            <!-- COURSE IMAGE -->
+
+            <div class="course-cover">
+
+                {% if course.image %}
+
+                    <img src="{{ course.image.url }}"
+                         alt="{{ course.title }}">
+
+                {% else %}
+
+                    <div class="course-image-placeholder">
+                        🎓
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- COURSE HEADER -->
+
+            <div class="course-header">
+
+                <span class="course-badge">
+                    🎓 COURSE
+                </span>
+
+                <h1>
+                    {{ course.title }}
+                </h1>
+
+                <p class="course-short-description">
+                    {{ course.description }}
+                </p>
+
+
+                <!-- COURSE META -->
+
+                <div class="course-meta">
+
+                    <div class="meta-item">
+
+                        <span class="meta-icon">
+                            👨‍🏫
+                        </span>
+
+                        <div>
+                            <small>Instructor</small>
+
+                            <strong>
+                                {{ course.teacher.username }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="meta-item">
+
+                        <span class="meta-icon">
+                            📚
+                        </span>
+
+                        <div>
+                            <small>Lessons</small>
+
+                            <strong>
+                                {{ course.lessons.count }}
+                            </strong>
+                        </div>
+
+                    </div>
+
+
+                    <div class="meta-item">
+
+                        <span class="meta-icon">
+                            🎯
+                        </span>
+
+                        <div>
+                            <small>Learning</small>
+
+                            <strong>
+                                Self-paced
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ENROLLMENT AREA -->
+
+                <div class="enrollment-area">
+
+                    {% if user.is_authenticated %}
+
+                        {% if user.role == 'student' %}
+
+                            <form method="POST"
+                                  action="{% url 'enroll_course' course.id %}">
+
+                                {% csrf_token %}
+
+                                <button type="submit"
+                                        class="enroll-btn">
+
+                                    🎓 Enroll Now
+
+                                </button>
+
+                            </form>
+
+
+                        {% elif user == course.teacher %}
+
+                            <div class="teacher-notice">
+                                👨‍🏫 You are the instructor of this course.
+                            </div>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <a href="{% url 'login' %}"
+                           class="enroll-btn">
+
+                            🔐 Login to Enroll
+
+                        </a>
+
+                        <p class="login-note">
+                            Don't have an account?
+
+                            <a href="{% url 'register' %}">
+                                Register here
+                            </a>
+                        </p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================================
+             COURSE BODY
+        ========================================== -->
+
+        <div class="course-content-wrapper">
+
+
+            <!-- =====================================
+                 LEFT / MAIN CONTENT
+            ====================================== -->
+
+            <main class="course-main-content">
+
+
+                <!-- ABOUT COURSE -->
+
+                <section class="content-card">
+
+                    <div class="section-title">
+
+                        <span class="section-icon">
+                            📖
+                        </span>
+
+                        <div>
+                            <h2>
+                                About This Course
+                            </h2>
+
+                            <p>
+                                Everything you need to know about this course.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="description-text">
+
+                        <p>
+                            {{ course.description }}
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- WHAT YOU WILL LEARN -->
+
+                <section class="content-card">
+
+                    <div class="section-title">
+
+                        <span class="section-icon">
+                            ✨
+                        </span>
+
+                        <div>
+                            <h2>
+                                What You'll Learn
+                            </h2>
+
+                            <p>
+                                Skills and knowledge you will gain.
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="learning-grid">
+
+                        <div class="learning-item">
+
+                            <span>✓</span>
+
+                            <p>
+                                Learn the fundamentals step by step
+                            </p>
+
+                        </div>
+
+
+                        <div class="learning-item">
+
+                            <span>✓</span>
+
+                            <p>
+                                Build practical skills through lessons
+                            </p>
+
+                        </div>
+
+
+                        <div class="learning-item">
+
+                            <span>✓</span>
+
+                            <p>
+                                Practice what you learn
+                            </p>
+
+                        </div>
+
+
+                        <div class="learning-item">
+
+                            <span>✓</span>
+
+                            <p>
+                                Improve your development skills
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     COURSE CONTENT / LESSONS
+                ================================== -->
+
+                <section class="content-card">
+
+                    <div class="section-heading">
+
+                        <div class="section-title">
+
+                            <span class="section-icon">
+                                📚
+                            </span>
+
+                            <div>
+
+                                <h2>
+                                    Course Content
+                                </h2>
+
+                                <p>
+                                    {{ course.lessons.count }}
+                                    lessons available
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ADD LESSON -->
+
+                        {% if user.is_authenticated and user == course.teacher %}
+
+                            <a href="{% url 'lesson_create' course.id %}"
+                               class="add-lesson-btn">
+
+                                + Add Lesson
+
+                            </a>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- LESSONS -->
+
+                    <div class="lessons-list">
+
+                        {% for lesson in course.lessons.all %}
+
+                            <div class="lesson-card">
+
+
+                                <!-- NUMBER -->
+
+                                <div class="lesson-number">
+
+                                    {{ forloop.counter|stringformat:"02d" }}
+
+                                </div>
+
+
+                                <!-- LESSON INFO -->
+
+                                <div class="lesson-info">
+
+                                    <h3>
+                                        {{ lesson.title }}
+                                    </h3>
+
+                                    <p>
+                                        {{ lesson.content|truncatewords:25 }}
+                                    </p>
+
+                                </div>
+
+
+                                <!-- TEACHER ACTIONS -->
+
+                                {% if user.is_authenticated and user == course.teacher %}
+
+                                    <div class="lesson-actions">
+
+                                        <a href="{% url 'lesson_update' lesson.id %}"
+                                           class="edit-link">
+
+                                            ✏️ Edit
+
+                                        </a>
+
+
+                                        <a href="{% url 'lesson_delete' lesson.id %}"
+                                           class="delete-link">
+
+                                            🗑 Delete
+
+                                        </a>
+
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                        {% empty %}
+
+
+                            <!-- NO LESSONS -->
+
+                            <div class="empty-lessons">
+
+                                <div class="empty-lessons-icon">
+                                    📖
+                                </div>
+
+                                <h3>
+                                    No Lessons Yet
+                                </h3>
+
+                                <p>
+                                    Lessons for this course will appear here.
+                                </p>
+
+
+                                {% if user.is_authenticated and user == course.teacher %}
+
+                                    <a href="{% url 'lesson_create' course.id %}"
+                                       class="add-lesson-btn">
+
+                                        + Add First Lesson
+
+                                    </a>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </section>
+
+
+                <!-- =================================
+                     COURSE MANAGEMENT
+                ================================== -->
+
+                {% if request.user == course.teacher %}
+
+                    <section class="content-card management-card">
+
+                        <div class="section-title">
+
+                            <span class="section-icon">
+                                ⚙️
+                            </span>
+
+                            <div>
+
+                                <h2>
+                                    Course Management
+                                </h2>
+
+                                <p>
+                                    Manage your course information and content.
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="management-actions">
+
+                            <a href="{% url 'update_course' course.id %}"
+                               class="edit-course-btn">
+
+                                ✏️ Edit Course
+
+                            </a>
+
+
+                            <form method="POST"
+                                  action="{% url 'delete_course' course.id %}"
+                                  onsubmit="return confirm('Are you sure you want to delete this course?');">
+
+                                {% csrf_token %}
+
+                                <button type="submit"
+                                        class="delete-course-btn">
+
+                                    🗑 Delete Course
+
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </section>
+
+                {% endif %}
+
+
+            </main>
+
+
+            <!-- =====================================
+                 RIGHT SIDE INFORMATION
+            ====================================== -->
+
+            <aside class="course-sidebar">
+
+
+                <!-- COURSE SUMMARY -->
+
+                <div class="sidebar-card">
+
+                    <h3>
+                        Course Information
+                    </h3>
+
+
+                    <div class="sidebar-info">
+
+                        <div class="info-row">
+
+                            <span>
+                                👨‍🏫 Instructor
+                            </span>
+
+                            <strong>
+                                {{ course.teacher.username }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                📚 Lessons
+                            </span>
+
+                            <strong>
+                                {{ course.lessons.count }}
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                🎯 Learning
+                            </span>
+
+                            <strong>
+                                Self-paced
+                            </strong>
+
+                        </div>
+
+
+                        <div class="info-row">
+
+                            <span>
+                                🎓 Level
+                            </span>
+
+                            <strong>
+                                All Levels
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- START LEARNING CARD -->
+
+                <div class="sidebar-learning-card">
+
+                    <div class="sidebar-icon">
+                        🎓
+                    </div>
+
+                    <h3>
+                        Ready to Start?
+                    </h3>
+
+                    <p>
+                        Join this course and start learning today.
+                    </p>
+
+
+                    {% if user.is_authenticated %}
+
+                        {% if user.role == 'student' %}
+
+                            <form method="POST"
+                                  action="{% url 'enroll_course' course.id %}">
+
+                                {% csrf_token %}
+
+                                <button type="submit"
+                                        class="sidebar-enroll-btn">
+
+                                    Enroll Now →
+
+                                </button>
+
+                            </form>
+
+                        {% elif user == course.teacher %}
+
+                            <div class="sidebar-teacher-message">
+
+                                👨‍🏫
+                                You are the instructor.
+
+                            </div>
+
+                        {% endif %}
+
+                    {% else %}
+
+                        <a href="{% url 'login' %}"
+                           class="sidebar-enroll-btn">
+
+                            Login to Enroll →
+
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <!-- BACK BUTTON -->
+
+        <div class="bottom-back">
+
+            <a href="{% url 'course_list' %}">
+                ← Back to All Courses
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock content %}
+
+
+
+
+

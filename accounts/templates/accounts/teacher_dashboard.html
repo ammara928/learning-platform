@@ -1,0 +1,440 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Teacher Dashboard
+{% endblock %}
+
+{% block extra_css %} <link rel="stylesheet" href="{% static 'css/teacher_dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="teacher-dashboard">
+
+<!-- =========================
+     SIDEBAR
+========================== -->
+
+<aside class="teacher-sidebar">
+
+    <div class="sidebar-brand">
+        <div class="brand-icon">🎓</div>
+        <div>
+            <h2>LearnHub</h2>
+            <span>Teacher Panel</span>
+        </div>
+    </div>
+
+    <nav class="sidebar-nav">
+
+        <a href="#" class="nav-item active">
+            <span class="nav-icon">📊</span>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="#courses" class="nav-item">
+            <span class="nav-icon">📚</span>
+            <span>My Courses</span>
+        </a>
+
+        <a href="{% url 'create_course' %}" class="nav-item">
+            <span class="nav-icon">➕</span>
+            <span>Create Course</span>
+        </a>
+
+        <a href="#courses" class="nav-item">
+            <span class="nav-icon">📖</span>
+            <span>Lessons</span>
+        </a>
+
+    </nav>
+
+    <div class="sidebar-bottom">
+
+        <div class="teacher-mini-profile">
+
+            <div class="profile-avatar">
+                {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+            </div>
+
+            <div class="profile-info">
+                <strong>
+                    {{ request.user.first_name|default:request.user.username }}
+                </strong>
+                <span>Teacher</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================== -->
+
+<main class="teacher-main">
+
+    <!-- TOP BAR -->
+
+    <header class="dashboard-topbar">
+
+        <div class="mobile-brand">
+            <span class="mobile-brand-icon">🎓</span>
+            <strong>LearnHub</strong>
+        </div>
+
+        <div class="topbar-right">
+
+            <div class="welcome-user">
+
+                <div class="top-avatar">
+                    {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                </div>
+
+                <div>
+                    <span>Welcome back</span>
+                    <strong>
+                        {{ request.user.first_name|default:request.user.username }}
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         WELCOME HERO
+    ========================== -->
+
+    <section class="welcome-section">
+
+        <div class="welcome-content">
+
+            <span class="welcome-label">
+                TEACHER DASHBOARD
+            </span>
+
+            <h1>
+                Welcome,
+                {{ request.user.first_name|default:request.user.username }}
+                👋
+            </h1>
+
+            <p>
+                Manage your courses, lessons and students
+                from one simple dashboard.
+            </p>
+
+        </div>
+
+        <div class="welcome-action">
+
+            <a href="{% url 'create_course' %}" class="create-course-btn">
+                <span>＋</span>
+                Create New Course
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         STATISTICS
+    ========================== -->
+
+    <section class="stats-grid">
+
+        <div class="stat-card">
+
+            <div class="stat-icon courses-icon">
+                📚
+            </div>
+
+            <div class="stat-info">
+                <span>Total Courses</span>
+                <strong>{{ courses|length }}</strong>
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon students-icon">
+                👥
+            </div>
+
+            <div class="stat-info">
+                <span>Total Students</span>
+
+                <strong>
+                    {% for course in courses %}
+                        {{ course.enrollments.count }}
+                    {% empty %}
+                        0
+                    {% endfor %}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon lessons-icon">
+                📖
+            </div>
+
+            <div class="stat-info">
+                <span>Total Lessons</span>
+
+                <strong>
+                    {% for course in courses %}
+                        {{ course.lessons.count }}
+                    {% empty %}
+                        0
+                    {% endfor %}
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon teaching-icon">
+                🎓
+            </div>
+
+            <div class="stat-info">
+                <span>Teaching</span>
+                <strong>Active</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         COURSES SECTION
+    ========================== -->
+
+    <section class="courses-section" id="courses">
+
+        <div class="section-header">
+
+            <div>
+                <span class="section-label">
+                    YOUR CONTENT
+                </span>
+
+                <h2>My Courses</h2>
+
+                <p>
+                    Manage and organize your published courses.
+                </p>
+            </div>
+
+            <a href="{% url 'create_course' %}" class="section-create-btn">
+                + Add Course
+            </a>
+
+        </div>
+
+
+        <!-- COURSE GRID -->
+
+        <div class="course-grid">
+
+            {% for course in courses %}
+
+                <article class="course-card">
+
+                    <!-- COURSE TOP -->
+
+                    <div class="course-card-top">
+
+                        <div class="course-number">
+                            {{ forloop.counter|stringformat:"02d" }}
+                        </div>
+
+                        <div class="course-menu">
+                            <span>⋮</span>
+                        </div>
+
+                    </div>
+
+
+                    <!-- COURSE CONTENT -->
+
+                    <div class="course-content">
+
+                        <span class="course-category">
+                            COURSE
+                        </span>
+
+                        <h3>
+                            {{ course.title }}
+                        </h3>
+
+                        <p class="course-description">
+                            {{ course.description|truncatewords:22 }}
+                        </p>
+
+
+                        <!-- COURSE STATS -->
+
+                        <div class="course-stats">
+
+                            <div class="course-stat">
+
+                                <span class="course-stat-icon">
+                                    👥
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        {{ course.enrollments.count }}
+                                    </strong>
+
+                                    <small>
+                                        Students
+                                    </small>
+                                </div>
+
+                            </div>
+
+
+                            <div class="course-stat">
+
+                                <span class="course-stat-icon">
+                                    📖
+                                </span>
+
+                                <div>
+                                    <strong>
+                                        {{ course.lessons.count }}
+                                    </strong>
+
+                                    <small>
+                                        Lessons
+                                    </small>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- COURSE ACTIONS -->
+
+                    <div class="course-actions">
+
+                        <a
+                            href="{% url 'course_detail' course.id %}"
+                            class="view-course-btn"
+                        >
+                            View Course
+                            <span>→</span>
+                        </a>
+
+
+                        <a
+                            href="{% url 'update_course' course.id %}"
+                            class="edit-course-btn"
+                        >
+                            ✏️
+                        </a>
+
+
+                        <form
+                            method="POST"
+                            action="{% url 'delete_course' course.id %}"
+                            class="delete-course-form"
+                        >
+
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="delete-course-btn"
+                                onclick="return confirm('Are you sure you want to delete this course?');"
+                                title="Delete Course"
+                            >
+                                🗑
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </article>
+
+
+            {% empty %}
+
+                <!-- EMPTY STATE -->
+
+                <div class="empty-courses">
+
+                    <div class="empty-icon">
+                        📚
+                    </div>
+
+                    <h3>
+                        No Courses Yet
+                    </h3>
+
+                    <p>
+                        You haven't created any courses yet.
+                        Start teaching by creating your first course.
+                    </p>
+
+                    <a href="{% url 'create_course' %}" class="empty-create-btn">
+                        + Create Your First Course
+                    </a>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 LearnHub Teacher Dashboard
+        </p>
+
+        <span>
+            Keep teaching. Keep inspiring. ✨
+        </span>
+
+    </footer>
+
+</main>
+
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,185 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+    Courses
+{% endblock title %}
+
+{% block content %}
+
+<div class="courses-page">
+
+    <!-- HERO SECTION -->
+
+    <section class="courses-hero">
+
+        <div class="courses-hero-content">
+
+            <span class="hero-badge">
+                🎓 LEARN • GROW • SUCCEED
+            </span>
+
+            <h1>
+                Explore Our Courses
+            </h1>
+
+            <p>
+                Learn new skills, improve your knowledge,
+                and build your future with our expert-led courses.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- COURSES SECTION -->
+
+    <div class="courses-container">
+
+        <div class="courses-heading">
+
+            <div>
+                <h2>
+                    Available Courses
+                </h2>
+
+                <p>
+                    Choose a course and start learning today.
+                </p>
+            </div>
+
+            {% if user.is_authenticated and user.role == 'teacher' %}
+
+                <a href="{% url 'create_course' %}"
+                   class="dashboard-btn create-course-btn">
+                    + Create Course
+                </a>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- COURSE GRID -->
+
+        <div class="course-grid">
+
+            {% for course in courses %}
+
+                <article class="course-card">
+
+                    <!-- COURSE IMAGE -->
+
+                    <div class="course-image">
+
+                        {% if course.image %}
+
+                            <img src="{{ course.image.url }}"
+                                 alt="{{ course.title }}">
+
+                        {% else %}
+
+                            <div class="course-placeholder">
+                                🎓
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- COURSE CONTENT -->
+
+                    <div class="course-content">
+
+                        <span class="course-label">
+                            COURSE
+                        </span>
+
+                        <h3>
+                            {{ course.title }}
+                        </h3>
+
+                        <p class="course-description">
+                            {{ course.description|truncatewords:25 }}
+                        </p>
+
+
+                        <!-- COURSE INFORMATION -->
+
+                        <div class="course-info">
+
+                            <div>
+                                👨‍🏫
+                                <span>
+                                    {{ course.teacher.username }}
+                                </span>
+                            </div>
+
+                            <div>
+                                📚
+                                <span>
+                                    {{ course.lessons.count }} Lessons
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                        <!-- CARD FOOTER -->
+
+                        <div class="course-card-footer">
+
+                            <a href="{% url 'course_detail' course.id %}"
+                               class="view-course-btn">
+                                View Course
+                                <span>→</span>
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <!-- EMPTY STATE -->
+
+                <div class="empty-courses">
+
+                    <div class="empty-icon">
+                        📚
+                    </div>
+
+                    <h2>
+                        No Courses Available
+                    </h2>
+
+                    <p>
+                        There are no courses available right now.
+                        Please check back later.
+                    </p>
+
+                    {% if user.is_authenticated and user.role == 'teacher' %}
+
+                        <a href="{% url 'create_course' %}"
+                           class="dashboard-btn">
+                            + Create Your First Course
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock content %}
+

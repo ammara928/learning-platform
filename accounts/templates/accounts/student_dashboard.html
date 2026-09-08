@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Student Dashboard | Learning Platform
+{% endblock %}
+
+{% block extra_css %}
+<!-- <link rel="stylesheet" href="{% static 'accounts/accounts.css' %}"> -->
+
+{% endblock %}
+
+{% block content %}
+
+<div class="student-dashboard">
+
+    <!-- Dashboard Header -->
+    <section class="student-hero">
+        <div class="dashboard-container">
+            <div class="student-hero-content">
+                <div>
+                    <span class="dashboard-label">🎓 STUDENT DASHBOARD</span>
+
+                    <h1>
+                        Welcome back,
+                        <span>{{ user.username }}</span>!
+                    </h1>
+
+                    <p>
+                        Continue your learning journey and keep building
+                        your skills.
+                    </p>
+                </div>
+
+                <div class="student-hero-icon">
+                    🎓
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="dashboard-container">
+
+        <!-- Stats -->
+        <section class="student-stats">
+
+            <div class="student-stat-card">
+                <div class="stat-icon">📚</div>
+
+                <div>
+                    <span>Enrolled Courses</span>
+                    <strong>{{ enrollments|length }}</strong>
+                </div>
+            </div>
+
+            <div class="student-stat-card">
+                <div class="stat-icon">🎯</div>
+
+                <div>
+                    <span>Learning Status</span>
+                    <strong>Active</strong>
+                </div>
+            </div>
+
+            <div class="student-stat-card">
+                <div class="stat-icon">🚀</div>
+
+                <div>
+                    <span>Keep Learning</span>
+                    <strong>Start</strong>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- My Courses -->
+        <section class="student-courses-section">
+
+            <div class="section-heading">
+                <div>
+                    <span class="section-label">MY LEARNING</span>
+
+                    <h2>My Courses</h2>
+
+                    <p>
+                        Courses you are currently enrolled in.
+                    </p>
+                </div>
+
+                <a href="{% url 'course_list' %}"
+                   class="dashboard-btn">
+                    Browse Courses
+                </a>
+            </div>
+
+
+            <div class="student-course-grid">
+
+                {% for enrollment in enrollments %}
+
+                    <div class="student-course-card">
+
+                        <div class="student-course-icon">
+                            📖
+                        </div>
+
+                        <div class="student-course-content">
+
+                            <span class="course-status">
+                                ENROLLED
+                            </span>
+
+                            <h3>
+                                {{ enrollment.course.title }}
+                            </h3>
+
+                            <p>
+                                {{ enrollment.course.description|truncatewords:20 }}
+                            </p>
+
+                            <div class="student-course-meta">
+
+                                <span>
+                                    👨‍🏫
+                                    {{ enrollment.course.teacher.username }}
+                                </span>
+
+                                <span>
+                                    📚
+                                    {{ enrollment.course.lessons.count }}
+                                    Lessons
+                                </span>
+
+                            </div>
+
+                            <a href="{% url 'course_detail' enrollment.course.id %}"
+                               class="continue-learning-btn">
+                                Continue Learning →
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="student-empty-state">
+
+                        <div class="empty-icon">
+                            📚
+                        </div>
+
+                        <h3>
+                            No Courses Yet
+                        </h3>
+
+                        <p>
+                            You haven't enrolled in any courses yet.
+                            Explore our courses and start learning today.
+                        </p>
+
+                        <a href="{% url 'course_list' %}"
+                           class="dashboard-btn">
+                            Explore Courses
+                        </a>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- Learning Section -->
+        <section class="learning-banner">
+
+            <div class="learning-banner-icon">
+                💡
+            </div>
+
+            <div>
+                <span>KEEP GOING</span>
+
+                <h2>
+                    Your learning journey starts here.
+                </h2>
+
+                <p>
+                    Explore new courses, learn new skills,
+                    and continue improving every day.
+                </p>
+            </div>
+
+            <a href="{% url 'course_list' %}"
+               class="learning-banner-btn">
+                Explore Courses
+            </a>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

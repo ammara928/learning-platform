@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit Lesson
+{% endblock %}
+
+
+{% block content %}
+
+<div class="auth-container">
+
+    <h1>✏️ Edit Lesson</h1>
+
+  
+    <p>
+        Editing:
+        <strong>{{ lesson.title }}</strong>
+    </p>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">
+            Update Lesson
+        </button>
+
+    </form>
+
+    <br>
+
+    <div class="lesson-actions">
+
+        <a href="{% url 'lesson_detail' lesson.pk  %}">
+            ← Back to Lesson
+        </a>
+
+        <a href="{% url 'course_detail' course_id=lesson.course_id %}">
+            ← Back to Course
+        </a>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,320 @@
+/* =========================================
+STUDENT LEARNING PAGE
+========================================= */
+
+.learning-page {
+min-height: calc(100vh - 70px);
+padding: 40px 20px;
+background: #f5f6fa;
+}
+
+/* =========================================
+COURSE HEADER
+========================================= */
+
+.learning-header {
+max-width: 1200px;
+margin: 0 auto 30px;
+padding: 30px;
+background: #ffffff;
+border-radius: 16px;
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.learning-header h1 {
+margin: 0 0 10px;
+font-size: 32px;
+font-weight: 700;
+color: #222222;
+}
+
+.learning-header p {
+margin: 0;
+color: #666666;
+font-size: 16px;
+line-height: 1.7;
+}
+
+/* =========================================
+MAIN LEARNING CONTAINER
+========================================= */
+
+.learning-container {
+max-width: 1200px;
+margin: 0 auto;
+display: grid;
+grid-template-columns: 300px 1fr;
+
+gap: 25px;
+align-items: start;
+
+}
+
+/* =========================================
+LESSON SIDEBAR
+========================================= */
+
+.lesson-sidebar {
+background: #ffffff;
+border-radius: 16px;
+padding: 25px;
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+position: sticky;
+top: 90px;
+
+}
+
+.lesson-sidebar h2 {
+margin: 0 0 20px;
+font-size: 20px;
+color: #222222;
+
+padding-bottom: 15px;
+border-bottom: 1px solid #eeeeee;
+
+}
+
+/* 
+LESSON LINKS
+ */
+
+.lesson-link {
+display: flex;
+align-items: center;
+gap: 12px;
+
+padding: 13px 12px;
+margin-bottom: 8px;
+
+text-decoration: none;
+
+color: #444444;
+
+border-radius: 10px;
+
+transition: all 0.25s ease;
+
+}
+
+.lesson-link:hover {
+background: #f1f3f7;
+color: #111111;
+transform: translateX(3px);
+}
+
+/* Lesson Number */
+
+.lesson-number {
+min-width: 32px;
+height: 32px;
+display: flex;
+align-items: center;
+justify-content: center;
+
+background: #eeeeee;
+color: #333333;
+
+border-radius: 50%;
+
+font-size: 14px;
+font-weight: 600;
+
+}
+
+/* =========================================
+LESSON CONTENT
+========================================= */
+
+.lesson-content {
+background: #ffffff;
+min-height: 450px;
+
+padding: 35px;
+
+border-radius: 16px;
+
+box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+
+}
+
+.lesson-content h2 {
+margin: 0 0 25px;
+font-size: 28px;
+
+color: #222222;
+
+padding-bottom: 18px;
+
+border-bottom: 1px solid #eeeeee;
+
+}
+
+/* =========================================
+LESSON TEXT
+========================================= */
+
+.lesson-text {
+color: #444444;
+font-size: 17px;
+
+line-height: 1.9;
+
+margin-bottom: 35px;
+
+}
+
+.lesson-text p {
+margin-bottom: 18px;
+}
+
+/* =========================================
+COMPLETE BUTTON
+========================================= */
+
+.complete-btn {
+border: none;
+padding: 13px 24px;
+
+background: #222222;
+color: #ffffff;
+
+border-radius: 9px;
+
+font-size: 15px;
+font-weight: 600;
+
+cursor: pointer;
+
+transition: all 0.25s ease;
+
+}
+
+.complete-btn:hover {
+background: #444444;
+
+transform: translateY(-2px);
+
+box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+
+}
+
+/* 
+NO LESSON MESSAGE
+ */
+
+.no-lesson {
+min-height: 400px;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+text-align: center;
+
+}
+
+.no-lesson h2 {
+border: none;
+margin-bottom: 10px;
+font-size: 30px;
+
+}
+
+.no-lesson p {
+color: #777777;
+
+font-size: 16px;
+
+
+}
+
+/* =========================================
+NO LESSONS IN SIDEBAR
+========================================= */
+
+.lesson-sidebar > p {
+color: #777777;
+
+font-size: 14px;
+
+line-height: 1.6;
+
+
+}
+
+/* 
+TABLET
+*/
+
+@media (max-width: 900px) {
+
+.learning-container {
+    grid-template-columns: 240px 1fr;
+    gap: 18px;
+}
+
+.lesson-sidebar {
+    padding: 20px;
+}
+
+.lesson-content {
+    padding: 28px;
+}
+
+.learning-header h1 {
+    font-size: 28px;
+}
+
+
+}
+
+/* =========================================
+MOBILE
+========================================= */
+
+@media (max-width: 700px) {
+
+
+.learning-page {
+    padding: 20px 15px;
+}
+
+.learning-header {
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.learning-header h1 {
+    font-size: 24px;
+}
+
+.learning-header p {
+    font-size: 14px;
+}
+
+.learning-container {
+    grid-template-columns: 1fr;
+}
+
+.lesson-sidebar {
+    position: static;
+}
+
+.lesson-content {
+    min-height: 350px;
+    padding: 22px;
+}
+
+.lesson-content h2 {
+    font-size: 23px;
+}
+
+.lesson-text {
+    font-size: 15px;
+    line-height: 1.8;
+}
+
+.complete-btn {
+    width: 100%;
+}
+}
