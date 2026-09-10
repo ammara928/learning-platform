@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+{{ course.title }} | Students
+{% endblock %}
+
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/course_students.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<div class="students-page">
+
+    <!-- HEADER -->
+
+    <section class="students-header">
+
+        <div class="header-content">
+
+            <a
+                href="{% url 'teacher_dashboard' %}"
+                class="back-link"
+            >
+                ← Back to Dashboard
+            </a>
+
+            <span class="page-label">
+                COURSE STUDENTS
+            </span>
+
+            <h1>
+                {{ course.title }}
+            </h1>
+
+            <p>
+                View enrolled students and track their learning progress.
+            </p>
+
+        </div>
+
+        <div class="course-summary">
+
+            <div class="summary-item">
+
+                <span class="summary-icon">
+                    👥
+                </span>
+
+                <div>
+                    <strong>
+                        {{ students|length }}
+                    </strong>
+
+                    <small>
+                        Students
+                    </small>
+                </div>
+
+            </div>
+
+
+            <div class="summary-item">
+
+                <span class="summary-icon">
+                    📖
+                </span>
+
+                <div>
+                    <strong>
+                        {{ total_lessons }}
+                    </strong>
+
+                    <small>
+                        Lessons
+                    </small>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- STUDENTS -->
+
+    <section class="students-section">
+
+        <div class="section-heading">
+
+            <div>
+                <span>
+                    ENROLLMENTS
+                </span>
+
+                <h2>
+                    Enrolled Students
+                </h2>
+            </div>
+
+        </div>
+
+
+        {% if students %}
+
+            <div class="students-list">
+
+                {% for item in students %}
+
+                    <article class="student-card">
+
+                        <!-- STUDENT INFO -->
+
+                        <div class="student-info">
+
+                            <div class="student-avatar">
+
+                                {% if item.student.first_name %}
+                                    {{ item.student.first_name|slice:":1"|upper }}
+                                {% else %}
+                                    {{ item.student.username|slice:":1"|upper }}
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="student-details">
+
+                                <h3>
+
+                                    {% if item.student.get_full_name %}
+                                        {{ item.student.get_full_name }}
+                                    {% else %}
+                                        {{ item.student.username }}
+                                    {% endif %}
+
+                                </h3>
+
+                                <p>
+                                    @{{ item.student.username }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- PROGRESS -->
+
+                        <div class="student-progress">
+
+                            <div class="progress-top">
+
+                                <span>
+                                    Learning Progress
+                                </span>
+
+                                <strong>
+                                    {{ item.progress }}%
+                                </strong>
+
+                            </div>
+
+
+                            <div class="progress-bar">
+
+                                <div
+                                    class="progress-fill"
+                                    style="width: {{ item.progress }}%;"
+                                ></div>
+
+                            </div>
+
+
+                            <div class="progress-bottom">
+
+                                <span>
+                                    {{ item.completed_lessons }}
+                                    / 
+                                    {{ item.total_lessons }}
+                                    lessons completed
+                                </span>
+
+                                {% if item.progress == 100 %}
+
+                                    <span class="completed-badge">
+                                        ✓ Completed
+                                    </span>
+
+                                {% elif item.progress > 0 %}
+
+                                    <span class="learning-badge">
+                                        Learning
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="not-started-badge">
+                                        Not Started
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <!-- EMPTY STATE -->
+
+            <div class="empty-students">
+
+                <div class="empty-icon">
+                    👥
+                </div>
+
+                <h3>
+                    No Students Yet
+                </h3>
+
+                <p>
+                    No students have enrolled in this course yet.
+                </p>
+
+                <a
+                    href="{% url 'teacher_dashboard' %}"
+                    class="back-dashboard-btn"
+                >
+                    ← Back to Dashboard
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </section>
+
+
+    <!-- FOOTER -->
+
+    <footer class="students-footer">
+
+        <p>
+            © 2026 LearnHub Teacher Dashboard
+        </p>
+
+        <span>
+            Keep teaching. Keep inspiring. ✨
+        </span>
+
+    </footer>
+
+</div>
+
+{% endblock %}

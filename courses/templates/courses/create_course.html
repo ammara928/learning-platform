@@ -50,14 +50,18 @@
                 rows="7"
                 required
                 >{% if update %}{{ course.description }}{% endif %}</textarea>
-            ></textarea>
+            </textarea>
 
         </div>
 
-
-        <button type="submit">
-            Create Course
-        </button>
+    {% if update %} 
+    <button type="submit">
+         ✏️ Update Course </button>
+          {% else %}
+           <button type="submit">
+             ➕ Create Course 
+            </button>
+             {% endif %}
 
     </form>
 

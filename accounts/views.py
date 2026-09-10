@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
+
+from courses.models import Course, Enrollment, LessonProgress, Lesson
 
 from .forms import RegisterForm
 
@@ -80,23 +84,32 @@ def dashboard(request):
     return redirect('student_dashboard')
 
 
+
 @login_required
 def teacher_dashboard(request):
 
-    if request.user.role != 'teacher':
-        messages.error(
-            request,
-            'You do not have permission to access this page.'
-        )
+    courses = Course.objects.filter(
+        teacher=request.user
+    )
 
-        return redirect('student_dashboard')
+    total_students = Enrollment.objects.filter(
+        course__teacher=request.user
+    ).values('student').distinct().count()
 
-    courses = request.user.courses.all()
+    total_lessons = Lesson.objects.filter(
+        course__teacher=request.user
+    ).count()
+
+    context = {
+        'courses': courses,
+        'total_students': total_students,
+        'total_lessons': total_lessons,
+    }
 
     return render(
         request,
         'accounts/teacher_dashboard.html',
-        {'courses': courses}
+        context
     )
 
 
@@ -129,3 +142,55 @@ def logout_view(request):
         return redirect('login')
 
     return redirect('dashboard')
+
+
+@login_required
+def course_students(request, course_id):
+
+    course = get_object_or_404(
+        Course,
+        id=course_id,
+        teacher=request.user
+    )
+
+    enrollments = Enrollment.objects.filter(
+        course=course
+    ).select_related('student')
+
+    total_lessons = course.lessons.count()
+
+    students = []
+
+    for enrollment in enrollments:
+
+        student = enrollment.student
+
+        completed_lessons = LessonProgress.objects.filter(
+            student=student,
+            lesson__course=course,
+            completed=True
+        ).count()
+
+        if total_lessons > 0:
+            progress = int(
+                (completed_lessons / total_lessons) * 100
+            )
+        else:
+            progress = 0
+
+        students.append({
+            'student': student,
+            'completed_lessons': completed_lessons,
+            'total_lessons': total_lessons,
+            'progress': progress,
+        })
+
+    return render(
+        request,
+        'accounts/course_students.html',
+        {
+            'course': course,
+            'students': students,
+            'total_lessons': total_lessons,
+        }
+    )

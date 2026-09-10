@@ -174,14 +174,7 @@ Teacher Dashboard
 
             <div class="stat-info">
                 <span>Total Students</span>
-
-                <strong>
-                    {% for course in courses %}
-                        {{ course.enrollments.count }}
-                    {% empty %}
-                        0
-                    {% endfor %}
-                </strong>
+        <strong>{{ total_students }}</strong>
 
             </div>
 
@@ -198,11 +191,7 @@ Teacher Dashboard
                 <span>Total Lessons</span>
 
                 <strong>
-                    {% for course in courses %}
-                        {{ course.lessons.count }}
-                    {% empty %}
-                        0
-                    {% endfor %}
+                   {{ total_lessons }}
                 </strong>
 
             </div>
@@ -343,41 +332,53 @@ Teacher Dashboard
 
                     <div class="course-actions">
 
-                        <a
-                            href="{% url 'course_detail' course.id %}"
-                            class="view-course-btn"
-                        >
-                            View Course
-                            <span>→</span>
-                        </a>
+                        <div class="course-actions">
+
+    <a
+        href="{% url 'course_detail' course.id %}"
+        class="view-course-btn"
+    >
+        View Course
+        <span>→</span>
+    </a>
+
+    <a
+        href="{% url 'course_students' course.id %}"
+        class="students-course-btn"
+    >
+        👥 Students
+    </a>
+
+    <a
+        href="{% url 'update_course' course.id %}"
+        class="edit-course-btn"
+    >
+        ✏️
+    </a>
+
+    <form
+        method="POST"
+        action="{% url 'delete_course' course.id %}"
+        class="delete-course-form"
+    >
+
+        {% csrf_token %}
+
+        <button
+            type="submit"
+            class="delete-course-btn"
+            onclick="return confirm('Are you sure you want to delete this course?');"
+            title="Delete Course"
+        >
+            🗑
+        </button>
+
+    </form>
+
+</div>
 
 
-                        <a
-                            href="{% url 'update_course' course.id %}"
-                            class="edit-course-btn"
-                        >
-                            ✏️
-                        </a>
-
-
-                        <form
-                            method="POST"
-                            action="{% url 'delete_course' course.id %}"
-                            class="delete-course-form"
-                        >
-
-                            {% csrf_token %}
-
-                            <button
-                                type="submit"
-                                class="delete-course-btn"
-                                onclick="return confirm('Are you sure you want to delete this course?');"
-                                title="Delete Course"
-                            >
-                                🗑
-                            </button>
-
-                        </form>
+                       
 
                     </div>
 

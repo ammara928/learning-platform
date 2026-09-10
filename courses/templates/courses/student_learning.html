@@ -19,6 +19,32 @@
         {{ course.description }}
     </p>
 </div>
+<div class="progress-section">
+
+<div class="progress-info">
+
+    <span>Course Progress</span>
+
+    <strong>{{ progress }}%</strong>
+
+</div>
+
+<div class="progress-bar">
+
+    <div
+        class="progress-fill"
+        style="width: {{ progress }}%;"
+        ></div>
+
+</div>
+
+<p>
+    {{ completed_count }} of {{ total_lessons }}
+    lessons completed
+</p>
+
+
+</div>
 
 
 <div class="learning-container">
@@ -40,6 +66,7 @@
                 <span>
                     {{ lesson.title }}
                 </span>
+                {% if lesson.id in completed_lesson_ids %} <span class="lesson-check"> ✓ </span> {% endif %}
 
             </a>
 
@@ -63,9 +90,24 @@
                 {{ selected_lesson.content|linebreaks }}
             </div>
 
-            <button class="complete-btn">
-                Mark Lesson as Complete
-            </button>
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input
+            type="hidden"
+            name="lesson_id"
+            value="{{ selected_lesson.id }}"
+             >
+
+        <button 
+        type="submit"
+        class="complete-btn"
+        >
+      Mark Lesson as Complete
+      </button>
+
+       </form>
 
         {% else %}
 

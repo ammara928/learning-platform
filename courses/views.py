@@ -1,10 +1,11 @@
+from django.http import request
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Course, Lesson
+from .models import Course, Lesson, Enrollment, LessonProgress
 from .forms import LessonForm
 
-from .models import Course, Enrollment
 
 
 def course_list(request):
@@ -268,23 +269,23 @@ def lesson_delete(request, lesson_id):
 @login_required
 def student_learning(request, course_id):
 
-    # Get the course
+    # Get course
     course = get_object_or_404(
         Course,
         id=course_id
     )
 
-    # Check that the student is enrolled
+    # Student must be enrolled
     enrollment = get_object_or_404(
         Enrollment,
         student=request.user,
         course=course
     )
 
-    # Get all lessons of this course
+    # Get all lessons
     lessons = course.lessons.all().order_by('created_at')
 
-    # Get selected lesson from URL
+    # Selected lesson
     lesson_id = request.GET.get('lesson')
 
     selected_lesson = None
@@ -296,6 +297,52 @@ def student_learning(request, course_id):
             course=course
         )
 
+    # Mark lesson as complete
+    if request.method == 'POST':
+
+        lesson_id = request.POST.get('lesson_id')
+
+        lesson = get_object_or_404(
+            Lesson,
+            id=lesson_id,
+            course=course
+        )
+
+        LessonProgress.objects.update_or_create(
+            student=request.user,
+            lesson=lesson,
+            defaults={
+                'completed': True
+            }
+        )
+
+        return redirect(
+            f'/learn/{course.id}/?lesson={lesson.id}'
+        )
+
+    # Get completed lessons
+    completed_lessons = LessonProgress.objects.filter(
+        student=request.user,
+        lesson__course=course,
+        completed=True
+    )
+    completed_lesson_ids = completed_lessons.values_list(
+    'lesson_id',
+    flat=True
+    )
+
+    completed_count = completed_lessons.count()
+    total_lessons = lessons.count()
+
+    # Calculate progress
+    if total_lessons > 0:
+        progress = int(
+            (completed_count / total_lessons) * 100
+        )
+    else:
+        progress = 0
+
+    # Render page
     return render(
         request,
         'courses/student_learning.html',
@@ -304,6 +351,10 @@ def student_learning(request, course_id):
             'lessons': lessons,
             'selected_lesson': selected_lesson,
             'enrollment': enrollment,
+            'completed_lessons': completed_lessons,
+            'completed_lesson_ids': completed_lesson_ids,
+            'completed_count': completed_count,
+            'total_lessons': total_lessons,
+            'progress': progress,
         }
     )
-
