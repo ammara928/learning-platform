@@ -63,31 +63,30 @@ class Enrollment(models.Model):
 
 class LessonProgress(models.Model):
 
-
     student = models.ForeignKey(
-    settings.AUTH_USER_MODEL,
-    on_delete=models.CASCADE,
-    related_name='lesson_progress'
-)
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='lesson_progress'
+    )
 
     lesson = models.ForeignKey(
-    Lesson,
-    on_delete=models.CASCADE,
-    related_name='progress'
-)
+        Lesson,
+        on_delete=models.CASCADE,
+        related_name='progress'
+    )
 
     completed = models.BooleanField(default=False)
 
     completed_at = models.DateTimeField(
-    null=True,
-    blank=True
-)
+        null=True,
+        blank=True
+    )
 
-class Meta:
-    unique_together = ('student', 'lesson')
+    class Meta:
+        unique_together = ('student', 'lesson')
 
-def __str__(self):
-    return f"{self.student.username} - {self.lesson.title}"
+    def __str__(self):
+        return f"{self.student.username} - {self.lesson.title}"
 
 
 

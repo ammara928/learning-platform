@@ -87,7 +87,9 @@ def dashboard(request):
 
 @login_required
 def teacher_dashboard(request):
-
+    if request.user.role != 'teacher':
+        messages.error(request, "You are not authorized to access the teacher dashboard.")
+        return redirect('student_dashboard')
     courses = Course.objects.filter(
         teacher=request.user
     )

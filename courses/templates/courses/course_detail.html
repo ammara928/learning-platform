@@ -381,6 +381,26 @@
 
                                 </div>
 
+                                     <!-- STUDENT -->
+            {% if user.is_authenticated and user.role == 'student' %}
+
+                {% if is_enrolled %}
+
+                    <a href="{% url 'student_learning' course.id %}?lesson={{ lesson.id }}"
+                       class="lesson-open-btn">
+
+                        {% if forloop.first %}
+                            ▶ Start Lesson
+                        {% else %}
+                            📖 Open Lesson
+                        {% endif %}
+
+                    </a>
+
+                {% endif %}
+
+            {% endif %}
+
 
                                 <!-- TEACHER ACTIONS -->
 

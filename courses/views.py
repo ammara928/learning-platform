@@ -5,6 +5,7 @@ from django.contrib import messages
 from .models import Course, Lesson
 from .models import Course, Lesson, Enrollment, LessonProgress
 from .forms import LessonForm
+from django.utils import timezone
 
 
 
@@ -46,9 +47,23 @@ def course_detail(request, course_id):
 
     course = get_object_or_404(Course, id=course_id)
 
-    return render(request, 'courses/course_detail.html', {
-        'course': course
-    })
+    is_enrolled = False
+
+    if request.user.is_authenticated and request.user.role == 'student':
+
+        is_enrolled = Enrollment.objects.filter(
+            student=request.user,
+            course=course
+        ).exists()
+
+    return render(
+        request,
+        'courses/course_detail.html',
+        {
+            'course': course,
+            'is_enrolled': is_enrolled,
+        }
+    )
 
 @login_required
 def update_course(request, course_id):
@@ -188,37 +203,102 @@ def lesson_create(request, course_id):
     )
 @login_required
 def lesson_detail(request, lesson_id):
+
     lesson = get_object_or_404(
         Lesson,
         id=lesson_id
     )
 
-    return render(
+    # Teacher can view their own lesson
+    if request.user == lesson.course.teacher:
+        return render(
+            request,
+            'courses/lesson_detail.html',
+            {
+                'lesson': lesson
+            }
+        )
+
+    # Student must be enrolled in the course
+    if request.user.role == 'student':
+
+        get_object_or_404(
+            Enrollment,
+            student=request.user,
+            course=lesson.course
+        )
+
+        return render(
+            request,
+            'courses/lesson_detail.html',
+            {
+                'lesson': lesson
+            }
+        )
+
+    messages.error(
         request,
-        'courses/lesson_detail.html',
-        {
-            'lesson': lesson
-        }
+        'You are not allowed to access this lesson.'
     )
+
+    return redirect('course_list')
 
 @login_required
 def lesson_update(request, lesson_id):
-    lesson = get_object_or_404(Lesson, id=lesson_id)
+
+    lesson = get_object_or_404(
+        Lesson,
+        id=lesson_id
+    )
+
+    # Only the teacher who owns the course
+    # can update the lesson
+    if request.user != lesson.course.teacher:
+
+        messages.error(
+            request,
+            'You are not allowed to update this lesson.'
+        )
+
+        return redirect(
+            'course_detail',
+            course_id=lesson.course.id
+        )
 
     if request.method == 'POST':
-        form = LessonForm(request.POST, instance=lesson)
+
+        form = LessonForm(
+            request.POST,
+            instance=lesson
+        )
 
         if form.is_valid():
+
             form.save()
-            messages.success(request, "Lesson updated successfully!")
-            return redirect('lesson_detail', lesson_id=lesson.pk)
+
+            messages.success(
+                request,
+                'Lesson updated successfully!'
+            )
+
+            return redirect(
+                'lesson_detail',
+                lesson_id=lesson.pk
+            )
 
     else:
-        form = LessonForm(instance=lesson)
+        form = LessonForm(
+            instance=lesson
+        )
 
-    return render(request, 'courses/lesson_update.html', {
-        'form': form,   'lesson': lesson,
-    })
+    return render(
+        request,
+        'courses/lesson_update.html',
+        {
+            'form': form,
+            'lesson': lesson
+        }
+    )
 
 
 @login_required
@@ -312,7 +392,8 @@ def student_learning(request, course_id):
             student=request.user,
             lesson=lesson,
             defaults={
-                'completed': True
+                'completed': True,
+                # 'completed_at': timezone.now()
             }
         )
 
