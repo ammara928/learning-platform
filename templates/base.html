@@ -41,15 +41,27 @@
 
         <div class="navbar-container">
 
+            <!-- LEFT: brand -->
             <a href="{% url 'course_list' %}"
                class="logo">
-                🎓 Learning Platform
+                <span class="logo-mark" aria-hidden="true">🎓</span>
+                <span class="logo-text">Learning Platform</span>
             </a>
 
+            <button type="button"
+                    class="nav-toggle"
+                    id="navToggle"
+                    aria-label="Toggle navigation menu"
+                    aria-expanded="false"
+                    aria-controls="navLinks">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 6.5H20.5M3.5 12H20.5M3.5 17.5H20.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            </button>
 
-            <div class="nav-links">
+            <!-- RIGHT: primary links, notifications, logged-in user -->
+            <div class="nav-links" id="navLinks">
 
-                <a href="{% url 'course_list' %}">
+                <a href="{% url 'course_list' %}"
+                   class="nav-link{% if request.resolver_match.url_name == 'course_list' %} is-active{% endif %}">
                     Courses
                 </a>
 
@@ -58,41 +70,106 @@
 
                     {% if user.role == 'teacher' %}
 
-                        <a href="{% url 'teacher_dashboard' %}">
+                        <a href="{% url 'teacher_dashboard' %}"
+                           class="nav-link{% if request.resolver_match.url_name == 'teacher_dashboard' %} is-active{% endif %}">
                             Teacher Dashboard
                         </a>
 
                     {% elif user.role == 'student' %}
 
-                        <a href="{% url 'student_dashboard' %}">
+                        <a href="{% url 'student_dashboard' %}"
+                           class="nav-link{% if request.resolver_match.url_name == 'student_dashboard' %} is-active{% endif %}">
                             My Dashboard
                         </a>
 
                     {% endif %}
 
 
-                    <span class="welcome">
-                        Hi, {{ user.username }}
-                    </span>
-
-
-                    <form method="POST"
-                          action="{% url 'logout' %}"
-                          class="logout-form">
-
-                        {% csrf_token %}
-
-                        <button type="submit"
-                                class="logout-btn">
-                            Logout
+                    <!--
+                        Notification bell — powered by the `notifications`
+                        context processor (notifications/context_processors.py),
+                        which supplies `notifications` (latest 10) and
+                        `unread_notifications_count` on every page.
+                    -->
+                    <div class="navbar-dropdown">
+                        <button type="button"
+                                class="icon-btn"
+                                id="notifBtn"
+                                aria-label="Notifications{% if unread_notifications_count %}, {{ unread_notifications_count }} unread{% endif %}"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9.5C6 6.46 8.46 4 11.5 4H12.5C15.54 4 18 6.46 18 9.5V13L19.5 16H4.5L6 13V9.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 18.5C10.3 19.2 11.1 19.7 12 19.7C12.9 19.7 13.7 19.2 14 18.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+                            {% if unread_notifications_count %}
+                                <span class="notif-dot" id="notifDot" aria-hidden="true"></span>
+                            {% endif %}
                         </button>
 
-                    </form>
+                        <div class="dropdown-panel notif-panel" id="notifPanel" role="menu" aria-label="Notifications">
+                            <div class="dropdown-header">Notifications</div>
 
+                            {% if notifications %}
+                                <ul class="notif-list">
+                                    {% for notification in notifications %}
+                                        <li class="notif-item{% if not notification.is_read %} is-unread{% endif %}">
+                                            <span class="notif-indicator" aria-hidden="true"></span>
+                                            <div>
+                                                <p class="notif-text">{{ notification.message }}</p>
+                                                <span class="notif-time">{{ notification.created_at|timesince }} ago</span>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="dropdown-empty">You're all caught up.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+
+                    <!-- Logged-in user — avatar, name, dropdown (Dashboard + Logout) -->
+                    <div class="navbar-dropdown">
+                        <button type="button"
+                                class="profile-trigger"
+                                id="profileBtn"
+                                aria-label="Account menu"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            <span class="avatar" aria-hidden="true">{{ user.username|slice:":1"|upper }}</span>
+                            <span class="profile-name">{{ user.username }}</span>
+                            <svg class="chevron" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        </button>
+
+                        <div class="dropdown-panel profile-panel" id="profilePanel" role="menu" aria-label="Account menu">
+
+                            {% if user.role == 'teacher' %}
+                                <a href="{% url 'teacher_dashboard' %}" class="dropdown-link" role="menuitem">Teacher Dashboard</a>
+                            {% elif user.role == 'student' %}
+                                <a href="{% url 'student_dashboard' %}" class="dropdown-link" role="menuitem">My Dashboard</a>
+                            {% endif %}
+
+                            <div class="dropdown-divider"></div>
+
+                            <form method="POST"
+                                  action="{% url 'logout' %}"
+                                  class="logout-form">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-link dropdown-link-danger" role="menuitem">
+                                    Logout
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Hidden CSRF token so the notification JS below can
+                         POST to mark-read without a visible form. -->
+                    <form id="notifCsrfForm" style="display:none;">
+                        {% csrf_token %}
+                    </form>
 
                 {% else %}
 
-                    <a href="{% url 'login' %}">
+                    <a href="{% url 'login' %}"
+                       class="nav-link">
                         Login
                     </a>
 
@@ -108,6 +185,98 @@
         </div>
 
     </nav>
+
+    <button class="nav-backdrop" id="navBackdrop" aria-hidden="true" tabindex="-1"></button>
+
+    <script>
+        (function () {
+            var toggle = document.getElementById('navToggle');
+            var links = document.getElementById('navLinks');
+            var backdrop = document.getElementById('navBackdrop');
+
+            function closeNav() {
+                if (!links) return;
+                links.classList.remove('is-open');
+                if (backdrop) backdrop.classList.remove('is-visible');
+                if (toggle) toggle.setAttribute('aria-expanded', 'false');
+            }
+
+            function toggleNav() {
+                var isOpen = links.classList.toggle('is-open');
+                if (backdrop) backdrop.classList.toggle('is-visible', isOpen);
+                toggle.setAttribute('aria-expanded', String(isOpen));
+            }
+
+            if (toggle && links) toggle.addEventListener('click', toggleNav);
+            if (backdrop) backdrop.addEventListener('click', closeNav);
+
+            // Notification / profile dropdowns
+            var notifBtn = document.getElementById('notifBtn');
+            var notifDot = document.getElementById('notifDot');
+
+            var dropdowns = [
+                { trigger: notifBtn, panel: document.getElementById('notifPanel') },
+                { trigger: document.getElementById('profileBtn'), panel: document.getElementById('profilePanel') }
+            ];
+
+            function closeAllDropdowns() {
+                dropdowns.forEach(function (d) {
+                    if (!d.trigger || !d.panel) return;
+                    d.panel.classList.remove('is-open');
+                    d.trigger.setAttribute('aria-expanded', 'false');
+                });
+            }
+
+            function markNotificationsRead() {
+                var csrfForm = document.getElementById('notifCsrfForm');
+                if (!csrfForm) return;
+                var csrfToken = csrfForm.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                fetch('{% url "notifications:mark_notifications_read" %}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                }).then(function () {
+                    // Unread dot + per-item highlight can drop immediately;
+                    // the DB is already updated for the next page load.
+                    if (notifDot) notifDot.remove();
+                    document.querySelectorAll('.notif-item.is-unread').forEach(function (item) {
+                        item.classList.remove('is-unread');
+                    });
+                }).catch(function (err) {
+                    console.error('Could not mark notifications read:', err);
+                });
+            }
+
+            dropdowns.forEach(function (d) {
+                if (!d.trigger || !d.panel) return;
+                d.trigger.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    var isOpen = d.panel.classList.contains('is-open');
+                    closeAllDropdowns();
+                    if (!isOpen) {
+                        d.panel.classList.add('is-open');
+                        d.trigger.setAttribute('aria-expanded', 'true');
+
+                        if (d.trigger === notifBtn) {
+                            markNotificationsRead();
+                        }
+                    }
+                });
+            });
+
+            document.addEventListener('click', closeAllDropdowns);
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    closeAllDropdowns();
+                    closeNav();
+                }
+            });
+        })();
+    </script>
+
 
 
     <!-- MESSAGES -->

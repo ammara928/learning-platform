@@ -2,440 +2,388 @@
 {% load static %}
 
 {% block title %}
-Teacher Dashboard
+    Teacher Dashboard | Learning Platform
 {% endblock %}
 
-{% block extra_css %} <link rel="stylesheet" href="{% static 'css/teacher_dashboard.css' %}">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/teacher_dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
 
 <div class="teacher-dashboard">
 
-<!-- =========================
-     SIDEBAR
-========================== -->
+  <div class="teacher-dashboard-layout">
 
-<aside class="teacher-sidebar">
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="teacher-sidebar" id="teacherSidebar">
 
-    <div class="sidebar-brand">
-        <div class="brand-icon">🎓</div>
-        <div>
-            <h2>LearnHub</h2>
-            <span>Teacher Panel</span>
-        </div>
-    </div>
-
-    <nav class="sidebar-nav">
-
-        <a href="#" class="nav-item active">
-            <span class="nav-icon">📊</span>
-            <span>Dashboard</span>
-        </a>
-
-        <a href="#courses" class="nav-item">
-            <span class="nav-icon">📚</span>
-            <span>My Courses</span>
-        </a>
-
-        <a href="{% url 'create_course' %}" class="nav-item">
-            <span class="nav-icon">➕</span>
-            <span>Create Course</span>
-        </a>
-
-        <a href="#courses" class="nav-item">
-            <span class="nav-icon">📖</span>
-            <span>Lessons</span>
-        </a>
-
-    </nav>
-
-    <div class="sidebar-bottom">
-
-        <div class="teacher-mini-profile">
-
-            <div class="profile-avatar">
-                {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+        <div class="sidebar-top">
+            <div class="sidebar-brand">
+                <div class="brand-icon">🎓</div>
+                <div>
+                    <h2>LearnHub</h2>
+                    <span>Teacher Panel</span>
+                </div>
             </div>
 
-            <div class="profile-info">
-                <strong>
-                    {{ request.user.first_name|default:request.user.username }}
-                </strong>
-                <span>Teacher</span>
-            </div>
+            <nav class="sidebar-nav">
 
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="3" width="7" height="5" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="12" width="7" height="9" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="16" width="7" height="5" rx="1.6" stroke="currentColor" stroke-width="1.7"/></svg>
+                    </span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#courses" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.3C4 4.6 4.6 4 5.3 4H12V20H5.3C4.6 20 4 19.4 4 18.7V5.3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 4H18.7C19.4 4 20 4.6 20 5.3V18.7C20 19.4 19.4 20 18.7 20H12" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span>My Courses</span>
+                </a>
+
+                <a href="{% url 'create_course' %}" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="1.7"/><path d="M12 8.4V15.6M8.4 12H15.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    </span>
+                    <span>Create Course</span>
+                </a>
+
+                <a href="#courses" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 4.4C5 4.4 7 3.4 12 3.4C17 3.4 19 4.4 19 4.4V19.4C19 19.4 17 18.4 12 18.4C7 18.4 5 19.4 5 19.4V4.4Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 3.4V18.4" stroke="currentColor" stroke-width="1.7"/></svg>
+                    </span>
+                    <span>Lessons</span>
+                </a>
+
+            </nav>
         </div>
 
-    </div>
+        <div class="sidebar-bottom">
 
-</aside>
-
-
-<!-- =========================
-     MAIN CONTENT
-========================== -->
-
-<main class="teacher-main">
-
-    <!-- TOP BAR -->
-
-    <header class="dashboard-topbar">
-
-        <div class="mobile-brand">
-            <span class="mobile-brand-icon">🎓</span>
-            <strong>LearnHub</strong>
-        </div>
-
-        <div class="topbar-right">
-
-            <div class="welcome-user">
-
-                <div class="top-avatar">
+            <div class="teacher-mini-profile">
+                <div class="profile-avatar">
                     {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                </div>
+                <div class="profile-info">
+                    <strong>{{ request.user.first_name|default:request.user.username }}</strong>
+                    <span>Teacher</span>
+                </div>
+            </div>
+
+            <!--
+                ASSUMPTION: assumes a URL named 'logout' exists (standard
+                Django auth POST logout). Rename if your project uses a
+                different URL name.
+            -->
+            <form method="POST" action="{% url 'logout' %}" class="sidebar-logout-form">
+                {% csrf_token %}
+                <button type="submit" class="sidebar-logout-btn">
+                    <span class="sidebar-logout-btn-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M9 4H6.4C5.6 4 5 4.6 5 5.4V18.6C5 19.4 5.6 20 6.4 20H9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M14 16L18.4 12L14 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.2 12H9.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    </span>
+                    Logout
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+    <button class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true" tabindex="-1"></button>
+
+    <div class="teacher-content">
+
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 6.5H20.5M3.5 12H20.5M3.5 17.5H20.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span>Menu</span>
+        </button>
+
+    <!-- Dashboard Header -->
+    <section class="teacher-hero">
+        <div class="dashboard-container">
+            <div class="teacher-hero-content">
+                <div>
+                    <span class="dashboard-label">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4L22 8.5L12 13L2 8.5L12 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 10.7V15.5C6 15.5 8.5 18 12 18C15.5 18 18 15.5 18 15.5V10.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        TEACHER DASHBOARD
+                    </span>
+
+                    <h1>
+                        Welcome,
+                        <span>{{ request.user.first_name|default:request.user.username }}</span>
+                        👋
+                    </h1>
+
+                    <p>
+                        Manage your courses, lessons and students
+                        from one simple dashboard.
+                    </p>
+                </div>
+
+                <div class="teacher-hero-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 4L22 8.5L12 13L2 8.5L12 4Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 10.7V15.5C6 15.5 8.5 18 12 18C15.5 18 18 15.5 18 15.5V10.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <div class="dashboard-container">
+
+        <!-- Stats -->
+        <section class="teacher-stats">
+
+            <div class="teacher-stat-card">
+                <div class="stat-icon stat-icon-blue" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M4 5.3C4 4.6 4.6 4 5.3 4H12V20H5.3C4.6 20 4 19.4 4 18.7V5.3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4H18.7C19.4 4 20 4.6 20 5.3V18.7C20 19.4 19.4 20 18.7 20H12" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                 </div>
 
                 <div>
-                    <span>Welcome back</span>
-                    <strong>
-                        {{ request.user.first_name|default:request.user.username }}
-                    </strong>
+                    <span>Total Courses</span>
+                    <strong>{{ courses|length }}</strong>
+                </div>
+            </div>
+
+            <div class="teacher-stat-card">
+                <div class="stat-icon stat-icon-teal" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M2.8 19.5C2.8 16.2 5.6 14 9 14C12.4 14 15.2 16.2 15.2 19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M15 14.3C17.4 14.7 19.2 16.6 19.2 19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="8" r="2.3" stroke="currentColor" stroke-width="1.5"/></svg>
                 </div>
 
+                <div>
+                    <span>Total Students</span>
+                    <strong>{{ total_students }}</strong>
+                </div>
             </div>
 
-        </div>
+            <div class="teacher-stat-card">
+                <div class="stat-icon stat-icon-blue" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M3.5 5C3.5 5 6 4 11 4V19C6 19 3.5 20 3.5 20V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M20.5 5C20.5 5 18 4 13 4V19C18 19 20.5 20 20.5 20V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                </div>
 
-    </header>
-
-
-    <!-- =========================
-         WELCOME HERO
-    ========================== -->
-
-    <section class="welcome-section">
-
-        <div class="welcome-content">
-
-            <span class="welcome-label">
-                TEACHER DASHBOARD
-            </span>
-
-            <h1>
-                Welcome,
-                {{ request.user.first_name|default:request.user.username }}
-                👋
-            </h1>
-
-            <p>
-                Manage your courses, lessons and students
-                from one simple dashboard.
-            </p>
-
-        </div>
-
-        <div class="welcome-action">
-
-            <a href="{% url 'create_course' %}" class="create-course-btn">
-                <span>＋</span>
-                Create New Course
-            </a>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         STATISTICS
-    ========================== -->
-
-    <section class="stats-grid">
-
-        <div class="stat-card">
-
-            <div class="stat-icon courses-icon">
-                📚
+                <div>
+                    <span>Total Lessons</span>
+                    <strong>{{ total_lessons }}</strong>
+                </div>
             </div>
 
-            <div class="stat-info">
-                <span>Total Courses</span>
-                <strong>{{ courses|length }}</strong>
+            <div class="teacher-stat-card">
+                <div class="stat-icon stat-icon-teal" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 4L22 8.5L12 13L2 8.5L12 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 10.7V15.5C6 15.5 8.5 18 12 18C15.5 18 18 15.5 18 15.5V10.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
+
+                <div>
+                    <span>Teaching</span>
+                    <strong>Active</strong>
+                </div>
             </div>
 
-        </div>
+        </section>
 
 
-        <div class="stat-card">
+        <!-- My Courses -->
+        <section class="teacher-courses-section" id="courses">
 
-            <div class="stat-icon students-icon">
-                👥
+            <div class="section-heading">
+                <div>
+                    <span class="section-label">YOUR CONTENT</span>
+
+                    <h2>My Courses</h2>
+
+                    <p>
+                        Manage and organize your published courses.
+                    </p>
+                </div>
+
+                <a href="{% url 'create_course' %}"
+                   class="dashboard-btn">
+                    + Add Course
+                </a>
             </div>
 
-            <div class="stat-info">
-                <span>Total Students</span>
-        <strong>{{ total_students }}</strong>
+
+            <div class="teacher-course-grid">
+
+                {% for course in courses %}
+
+                    <div class="teacher-course-card">
+
+                        <div class="teacher-course-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 4.4C5 4.4 7 3.4 12 3.4C17 3.4 19 4.4 19 4.4V19.4C19 19.4 17 18.4 12 18.4C7 18.4 5 19.4 5 19.4V4.4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 3.4V18.4" stroke="currentColor" stroke-width="1.6"/></svg>
+                        </div>
+
+                        <div class="teacher-course-content">
+
+                            <div class="teacher-course-heading">
+
+                                <span class="course-status">
+                                    <span class="course-status-dot" aria-hidden="true"></span>
+                                    ACTIVE
+                                </span>
+
+                                <span class="course-number">
+                                    {{ forloop.counter|stringformat:"02d" }}
+                                </span>
+
+                                <div class="course-menu">
+                                    <span>⋮</span>
+                                </div>
+
+                            </div>
+
+                            <h3>
+                                {{ course.title }}
+                            </h3>
+
+                            <p>
+                                {{ course.description|truncatewords:20 }}
+                            </p>
+
+                            <div class="teacher-course-meta">
+
+                                <span>
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2.8 19.5C2.8 16.2 5.6 14 9 14C12.4 14 15.2 16.2 15.2 19.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+                                    {{ course.enrollments.count }}
+                                    Students
+                                </span>
+
+                                <span>
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 5C3.5 5 6 4 11 4V19C6 19 3.5 20 3.5 20V5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M20.5 5C20.5 5 18 4 13 4V19C18 19 20.5 20 20.5 20V5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+                                    {{ course.lessons.count }}
+                                    Lessons
+                                </span>
+
+                            </div>
+
+                            <div class="teacher-course-actions">
+
+                                <a href="{% url 'course_detail' course.id %}"
+                                   class="continue-learning-btn">
+                                    View Course
+                                    <span aria-hidden="true">→</span>
+                                </a>
+
+                                <a href="{% url 'course_students' course.id %}"
+                                   class="teacher-secondary-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M2.8 19.5C2.8 16.2 5.6 14 9 14C12.4 14 15.2 16.2 15.2 19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                    Students
+                                </a>
+
+                                <a href="{% url 'update_course' course.id %}"
+                                   class="teacher-icon-btn"
+                                   title="Edit Course">
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20L4.7 16.9L15.3 6.3C15.9 5.7 16.9 5.7 17.5 6.3L17.7 6.5C18.3 7.1 18.3 8.1 17.7 8.7L7.1 19.3L4 20Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                                </a>
+
+                                <form method="POST"
+                                      action="{% url 'delete_course' course.id %}"
+                                      class="delete-course-form">
+
+                                    {% csrf_token %}
+
+                                    <button type="submit"
+                                            class="teacher-icon-btn teacher-icon-btn-danger"
+                                            onclick="return confirm('Are you sure you want to delete this course?');"
+                                            title="Delete Course">
+                                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4.5 7H19.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M9 7V5.3C9 4.6 9.6 4 10.3 4H13.7C14.4 4 15 4.6 15 5.3V7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 7L7.2 19.2C7.24 19.95 7.86 20.5 8.6 20.5H15.4C16.14 20.5 16.76 19.95 16.8 19.2L17.5 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                    </button>
+
+                                </form>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="teacher-empty-state">
+
+                        <div class="empty-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M4 5.3C4 4.6 4.6 4 5.3 4H12V20H5.3C4.6 20 4 19.4 4 18.7V5.3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4H18.7C19.4 4 20 4.6 20 5.3V18.7C20 19.4 19.4 20 18.7 20H12" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                        </div>
+
+                        <h3>
+                            No Courses Yet
+                        </h3>
+
+                        <p>
+                            You haven't created any courses yet.
+                            Start teaching by creating your first course.
+                        </p>
+
+                        <a href="{% url 'create_course' %}"
+                           class="dashboard-btn">
+                            + Create Your First Course
+                        </a>
+
+                    </div>
+
+                {% endfor %}
 
             </div>
 
-        </div>
+        </section>
 
 
-        <div class="stat-card">
+        <!-- Teaching Banner -->
+        <section class="learning-banner">
 
-            <div class="stat-icon lessons-icon">
-                📖
+            <div class="learning-banner-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5L13.6 8.4L18.5 8.4L14.5 11.4L16 16.3L12 13.3L8 16.3L9.5 11.4L5.5 8.4L10.4 8.4L12 3.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
             </div>
-
-            <div class="stat-info">
-                <span>Total Lessons</span>
-
-                <strong>
-                   {{ total_lessons }}
-                </strong>
-
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-icon teaching-icon">
-                🎓
-            </div>
-
-            <div class="stat-info">
-                <span>Teaching</span>
-                <strong>Active</strong>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         COURSES SECTION
-    ========================== -->
-
-    <section class="courses-section" id="courses">
-
-        <div class="section-header">
 
             <div>
-                <span class="section-label">
-                    YOUR CONTENT
-                </span>
+                <span>KEEP TEACHING</span>
 
-                <h2>My Courses</h2>
+                <h2>
+                    Ready to reach more students?
+                </h2>
 
                 <p>
-                    Manage and organize your published courses.
+                    Create a new course, add fresh lessons,
+                    and keep growing your classroom.
                 </p>
             </div>
 
-            <a href="{% url 'create_course' %}" class="section-create-btn">
-                + Add Course
+            <a href="{% url 'create_course' %}"
+               class="learning-banner-btn">
+                + Create New Course
             </a>
 
-        </div>
+        </section>
 
+    </div>
 
-        <!-- COURSE GRID -->
+    </div>
 
-        <div class="course-grid">
-
-            {% for course in courses %}
-
-                <article class="course-card">
-
-                    <!-- COURSE TOP -->
-
-                    <div class="course-card-top">
-
-                        <div class="course-number">
-                            {{ forloop.counter|stringformat:"02d" }}
-                        </div>
-
-                        <div class="course-menu">
-                            <span>⋮</span>
-                        </div>
-
-                    </div>
-
-
-                    <!-- COURSE CONTENT -->
-
-                    <div class="course-content">
-
-                        <span class="course-category">
-                            COURSE
-                        </span>
-
-                        <h3>
-                            {{ course.title }}
-                        </h3>
-
-                        <p class="course-description">
-                            {{ course.description|truncatewords:22 }}
-                        </p>
-
-
-                        <!-- COURSE STATS -->
-
-                        <div class="course-stats">
-
-                            <div class="course-stat">
-
-                                <span class="course-stat-icon">
-                                    👥
-                                </span>
-
-                                <div>
-                                    <strong>
-                                        {{ course.enrollments.count }}
-                                    </strong>
-
-                                    <small>
-                                        Students
-                                    </small>
-                                </div>
-
-                            </div>
-
-
-                            <div class="course-stat">
-
-                                <span class="course-stat-icon">
-                                    📖
-                                </span>
-
-                                <div>
-                                    <strong>
-                                        {{ course.lessons.count }}
-                                    </strong>
-
-                                    <small>
-                                        Lessons
-                                    </small>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-                    <!-- COURSE ACTIONS -->
-
-                    <div class="course-actions">
-
-                        <div class="course-actions">
-
-    <a
-        href="{% url 'course_detail' course.id %}"
-        class="view-course-btn"
-    >
-        View Course
-        <span>→</span>
-    </a>
-
-    <a
-        href="{% url 'course_students' course.id %}"
-        class="students-course-btn"
-    >
-        👥 Students
-    </a>
-
-    <a
-        href="{% url 'update_course' course.id %}"
-        class="edit-course-btn"
-    >
-        ✏️
-    </a>
-
-    <form
-        method="POST"
-        action="{% url 'delete_course' course.id %}"
-        class="delete-course-form"
-    >
-
-        {% csrf_token %}
-
-        <button
-            type="submit"
-            class="delete-course-btn"
-            onclick="return confirm('Are you sure you want to delete this course?');"
-            title="Delete Course"
-        >
-            🗑
-        </button>
-
-    </form>
+  </div>
 
 </div>
 
+<script>
+    (function () {
+        var toggle = document.getElementById('mobileMenuToggle');
+        var sidebar = document.getElementById('teacherSidebar');
+        var backdrop = document.getElementById('sidebarBackdrop');
 
-                       
+        function closeNav() {
+            sidebar.classList.remove('is-open');
+            backdrop.classList.remove('is-visible');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
 
-                    </div>
+        function toggleNav() {
+            var isOpen = sidebar.classList.toggle('is-open');
+            backdrop.classList.toggle('is-visible', isOpen);
+            toggle.setAttribute('aria-expanded', String(isOpen));
+        }
 
-                </article>
-
-
-            {% empty %}
-
-                <!-- EMPTY STATE -->
-
-                <div class="empty-courses">
-
-                    <div class="empty-icon">
-                        📚
-                    </div>
-
-                    <h3>
-                        No Courses Yet
-                    </h3>
-
-                    <p>
-                        You haven't created any courses yet.
-                        Start teaching by creating your first course.
-                    </p>
-
-                    <a href="{% url 'create_course' %}" class="empty-create-btn">
-                        + Create Your First Course
-                    </a>
-
-                </div>
-
-            {% endfor %}
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         FOOTER
-    ========================== -->
-
-    <footer class="dashboard-footer">
-
-        <p>
-            © 2026 LearnHub Teacher Dashboard
-        </p>
-
-        <span>
-            Keep teaching. Keep inspiring. ✨
-        </span>
-
-    </footer>
-
-</main>
-
-</div>
+        if (toggle) { toggle.addEventListener('click', toggleNav); }
+        if (backdrop) { backdrop.addEventListener('click', closeNav); }
+    })();
+</script>
 
 {% endblock %}
-

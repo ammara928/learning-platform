@@ -6,20 +6,102 @@
 {% endblock %}
 
 {% block extra_css %}
-<!-- <link rel="stylesheet" href="{% static 'accounts/accounts.css' %}"> -->
-
+<link rel="stylesheet" href="{% static 'accounts/css/student_dashboard.css' %}">
 {% endblock %}
 
 {% block content %}
 
 <div class="student-dashboard">
 
+  <div class="student-dashboard-layout">
+
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="student-sidebar" id="studentSidebar">
+
+        <div class="sidebar-top">
+            <div class="sidebar-brand">
+                <div class="brand-icon">🎓</div>
+                <div>
+                    <h2>LearnHub</h2>
+                    <span>Student Panel</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+
+                <a href="#" class="nav-item active">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="3" width="7" height="5" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="14" y="12" width="7" height="9" rx="1.6" stroke="currentColor" stroke-width="1.7"/><rect x="3" y="16" width="7" height="5" rx="1.6" stroke="currentColor" stroke-width="1.7"/></svg>
+                    </span>
+                    <span>Dashboard</span>
+                </a>
+
+                <a href="#courses" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 5.3C4 4.6 4.6 4 5.3 4H12V20H5.3C4.6 20 4 19.4 4 18.7V5.3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 4H18.7C19.4 4 20 4.6 20 5.3V18.7C20 19.4 19.4 20 18.7 20H12" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+                    </span>
+                    <span>My Courses</span>
+                </a>
+
+                <a href="{% url 'course_list' %}" class="nav-item">
+                    <span class="nav-icon">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.7"/><path d="M16.2 16.2L20 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    </span>
+                    <span>Browse Courses</span>
+                </a>
+
+            </nav>
+        </div>
+
+        <div class="sidebar-bottom">
+
+            <div class="student-mini-profile">
+                <div class="profile-avatar">
+                    {{ user.username|slice:":1"|upper }}
+                </div>
+                <div class="profile-info">
+                    <strong>{{ user.username }}</strong>
+                    <span>Student</span>
+                </div>
+            </div>
+
+            <!--
+                ASSUMPTION: assumes a URL named 'logout' exists (standard
+                Django auth POST logout). Rename if your project uses a
+                different URL name.
+            -->
+            <form method="POST" action="{% url 'logout' %}" class="sidebar-logout-form">
+                {% csrf_token %}
+                <button type="submit" class="sidebar-logout-btn">
+                    <span class="sidebar-logout-btn-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M9 4H6.4C5.6 4 5 4.6 5 5.4V18.6C5 19.4 5.6 20 6.4 20H9" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M14 16L18.4 12L14 8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M18.2 12H9.3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                    </span>
+                    Logout
+                </button>
+            </form>
+
+        </div>
+
+    </aside>
+
+    <button class="sidebar-backdrop" id="sidebarBackdrop" aria-hidden="true" tabindex="-1"></button>
+
+    <div class="student-content">
+
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 6.5H20.5M3.5 12H20.5M3.5 17.5H20.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <span>Menu</span>
+        </button>
+
     <!-- Dashboard Header -->
     <section class="student-hero">
         <div class="dashboard-container">
             <div class="student-hero-content">
                 <div>
-                    <span class="dashboard-label">🎓 STUDENT DASHBOARD</span>
+                    <span class="dashboard-label">
+                        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4L22 8.5L12 13L2 8.5L12 4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 10.7V15.5C6 15.5 8.5 18 12 18C15.5 18 18 15.5 18 15.5V10.7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        STUDENT DASHBOARD
+                    </span>
 
                     <h1>
                         Welcome back,
@@ -32,8 +114,8 @@
                     </p>
                 </div>
 
-                <div class="student-hero-icon">
-                    🎓
+                <div class="student-hero-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M12 4L22 8.5L12 13L2 8.5L12 4Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M6 10.7V15.5C6 15.5 8.5 18 12 18C15.5 18 18 15.5 18 15.5V10.7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
                 </div>
             </div>
         </div>
@@ -46,7 +128,9 @@
         <section class="student-stats">
 
             <div class="student-stat-card">
-                <div class="stat-icon">📚</div>
+                <div class="stat-icon stat-icon-blue" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M4 5.3C4 4.6 4.6 4 5.3 4H12V20H5.3C4.6 20 4 19.4 4 18.7V5.3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4H18.7C19.4 4 20 4.6 20 5.3V18.7C20 19.4 19.4 20 18.7 20H12" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                </div>
 
                 <div>
                     <span>Enrolled Courses</span>
@@ -55,7 +139,9 @@
             </div>
 
             <div class="student-stat-card">
-                <div class="stat-icon">🎯</div>
+                <div class="stat-icon stat-icon-teal" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></svg>
+                </div>
 
                 <div>
                     <span>Learning Status</span>
@@ -64,7 +150,9 @@
             </div>
 
             <div class="student-stat-card">
-                <div class="stat-icon">🚀</div>
+                <div class="stat-icon stat-icon-blue" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none"><path d="M13 3.5C13 3.5 18.5 4 18.5 10.5C18.5 14 16.5 16.5 15 18L13.5 16.5L11 19L9 17L11.5 14.5L10 13C11.5 11.5 14 9.5 13 3.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M9 17C7 17.5 5.5 19.5 5.5 19.5C5.5 19.5 7.5 18 8 16" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </div>
 
                 <div>
                     <span>Keep Learning</span>
@@ -102,13 +190,14 @@
 
                     <div class="student-course-card">
 
-                        <div class="student-course-icon">
-                            📖
+                        <div class="student-course-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M5 4.4C5 4.4 7 3.4 12 3.4C17 3.4 19 4.4 19 4.4V19.4C19 19.4 17 18.4 12 18.4C7 18.4 5 19.4 5 19.4V4.4Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 3.4V18.4" stroke="currentColor" stroke-width="1.6"/></svg>
                         </div>
 
                         <div class="student-course-content">
 
                             <span class="course-status">
+                                <span class="course-status-dot" aria-hidden="true"></span>
                                 ENROLLED
                             </span>
 
@@ -123,12 +212,12 @@
                             <div class="student-course-meta">
 
                                 <span>
-                                    👨‍🏫
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2.8 19.5C2.8 16.2 5.6 14 9 14C12.4 14 15.2 16.2 15.2 19.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
                                     {{ enrollment.course.teacher.username }}
                                 </span>
 
                                 <span>
-                                    📚
+                                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 5C3.5 5 6 4 11 4V19C6 19 3.5 20 3.5 20V5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/><path d="M20.5 5C20.5 5 18 4 13 4V19C18 19 20.5 20 20.5 20V5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
                                     {{ enrollment.course.lessons.count }}
                                     Lessons
                                 </span>
@@ -137,7 +226,8 @@
 
                             <a href="{% url 'course_detail' enrollment.course.id %}"
                                class="continue-learning-btn">
-                                Continue Learning →
+                                Continue Learning
+                                <span aria-hidden="true">→</span>
                             </a>
 
                         </div>
@@ -148,8 +238,8 @@
 
                     <div class="student-empty-state">
 
-                        <div class="empty-icon">
-                            📚
+                        <div class="empty-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" fill="none"><path d="M4 5.3C4 4.6 4.6 4 5.3 4H12V20H5.3C4.6 20 4 19.4 4 18.7V5.3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4H18.7C19.4 4 20 4.6 20 5.3V18.7C20 19.4 19.4 20 18.7 20H12" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                         </div>
 
                         <h3>
@@ -178,8 +268,8 @@
         <!-- Learning Section -->
         <section class="learning-banner">
 
-            <div class="learning-banner-icon">
-                💡
+            <div class="learning-banner-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 3.5L13.6 8.4L18.5 8.4L14.5 11.4L16 16.3L12 13.3L8 16.3L9.5 11.4L5.5 8.4L10.4 8.4L12 3.5Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
             </div>
 
             <div>
@@ -204,6 +294,33 @@
 
     </div>
 
+    </div>
+
+  </div>
+
 </div>
+
+<script>
+    (function () {
+        var toggle = document.getElementById('mobileMenuToggle');
+        var sidebar = document.getElementById('studentSidebar');
+        var backdrop = document.getElementById('sidebarBackdrop');
+
+        function closeNav() {
+            sidebar.classList.remove('is-open');
+            backdrop.classList.remove('is-visible');
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggleNav() {
+            var isOpen = sidebar.classList.toggle('is-open');
+            backdrop.classList.toggle('is-visible', isOpen);
+            toggle.setAttribute('aria-expanded', String(isOpen));
+        }
+
+        if (toggle) { toggle.addEventListener('click', toggleNav); }
+        if (backdrop) { backdrop.addEventListener('click', closeNav); }
+    })();
+</script>
 
 {% endblock %}

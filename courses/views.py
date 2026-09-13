@@ -6,6 +6,11 @@ from .models import Course, Lesson
 from .models import Course, Lesson, Enrollment, LessonProgress
 from .forms import LessonForm
 from django.utils import timezone
+from notifications.models import Notification
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 
 
 
@@ -37,8 +42,20 @@ def create_course(request):
             description=description
         )
 
+
+         # Create notification for all students
+        students = User.objects.filter(role='student')
+
+        for student in students:
+
+            Notification.objects.create(
+                recipient=student,
+                notification_type=Notification.COURSE_CREATED,
+                message=f'New course "{course.title}" has been created.'
+            )
         messages.success(request, 'Course created successfully!')
-        return redirect('course_list')
+
+        return redirect('teacher_dashboard')
 
     return render(request, 'courses/create_course.html')
 
@@ -132,6 +149,11 @@ def enroll_course(request, course_id):
         student=request.user,
         course=course
     )
+    Notification.objects.create(
+    recipient=course.teacher,
+    notification_type=Notification.STUDENT_ENROLLED,
+    message=f'{request.user.username} enrolled in "{course.title}".'
+)
 
     if created:
         messages.success(
@@ -393,9 +415,17 @@ def student_learning(request, course_id):
             lesson=lesson,
             defaults={
                 'completed': True,
-                # 'completed_at': timezone.now()
+                'completed_at': timezone.now()
             }
         )
+        Notification.objects.create(
+    recipient=lesson.course.teacher,
+    notification_type=Notification.COURSE_COMPLETED,
+    message=(
+        f'{request.user.username} completed '
+        f'"{lesson.course.title}".'
+    )
+)
 
         return redirect(
             f'/learn/{course.id}/?lesson={lesson.id}'
@@ -439,3 +469,4 @@ def student_learning(request, course_id):
             'progress': progress,
         }
     )
+

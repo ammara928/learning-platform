@@ -1,9 +1,13 @@
-
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
     Courses
 {% endblock title %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/course_list.css' %}">
+{% endblock %}
 
 {% block content %}
 
@@ -16,7 +20,7 @@
         <div class="courses-hero-content">
 
             <span class="hero-badge">
-                🎓 LEARN • GROW • SUCCEED
+                <span aria-hidden="true">🎓</span> LEARN • GROW • SUCCEED
             </span>
 
             <h1>
@@ -80,8 +84,8 @@
 
                         {% else %}
 
-                            <div class="course-placeholder">
-                                🎓
+                            <div class="course-placeholder" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="none"><path d="M4 5.3C4 4.6 4.6 4 5.3 4H12V20H5.3C4.6 20 4 19.4 4 18.7V5.3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4H18.7C19.4 4 20 4.6 20 5.3V18.7C20 19.4 19.4 20 18.7 20H12" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                             </div>
 
                         {% endif %}
@@ -111,14 +115,14 @@
                         <div class="course-info">
 
                             <div>
-                                👨‍🏫
+                                <svg class="course-info-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="9" cy="8" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M2.8 19.5C2.8 16.2 5.6 14 9 14C12.4 14 15.2 16.2 15.2 19.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                                 <span>
                                     {{ course.teacher.username }}
                                 </span>
                             </div>
 
                             <div>
-                                📚
+                                <svg class="course-info-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.5 5C3.5 5 6 4 11 4V19C6 19 3.5 20 3.5 20V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M20.5 5C20.5 5 18 4 13 4V19C18 19 20.5 20 20.5 20V5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
                                 <span>
                                     {{ course.lessons.count }} Lessons
                                 </span>
@@ -134,7 +138,7 @@
                             <a href="{% url 'course_detail' course.id %}"
                                class="view-course-btn">
                                 View Course
-                                <span>→</span>
+                                <span aria-hidden="true">→</span>
                             </a>
 
                         </div>
@@ -149,8 +153,8 @@
 
                 <div class="empty-courses">
 
-                    <div class="empty-icon">
-                        📚
+                    <div class="empty-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none"><path d="M4 5.3C4 4.6 4.6 4 5.3 4H12V20H5.3C4.6 20 4 19.4 4 18.7V5.3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 4H18.7C19.4 4 20 4.6 20 5.3V18.7C20 19.4 19.4 20 18.7 20H12" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
                     </div>
 
                     <h2>

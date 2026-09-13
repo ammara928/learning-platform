@@ -18,21 +18,13 @@ urlpatterns = [
 
     path('lesson/<int:lesson_id>/delete/', views.lesson_delete, name='lesson_delete'),
 
-    
+    path('learn/<int:course_id>/', views.student_learning, name='student_learning'),
 
-
-path('learn/<int:course_id>/', views.student_learning, name='student_learning'),
-
+   
 
 ]
 
 
     
 
-    # path('lessons/create/', views.lesson_create, name='lesson_create'),
-
-    # path('lessons/<int:lesson_id>/', views.lesson_detail, name='lesson_detail'),
-
-    # path('lessons/<int:lesson_id>/edit/', views.lesson_update, name='lesson_update'),
-
-    # path('lessons/<int:lesson_id>/delete/', views.lesson_delete, name='lesson_delete'),
+   

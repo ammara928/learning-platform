@@ -1,76 +1,98 @@
 {% extends 'base.html' %}
- {% load static %}
+{% load static %}
+
 {% block title %}
    {% if update %} Update Course {% else %} Create Course {% endif %}
 {% endblock %}
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/create_course.css' %}">
 {% endblock %}
 
 {% block content %}
 
-<div class="auth-container">
+<div class="auth-container course-form-page">
 
-   {% if update %}
-    <h1>✏️ Update Course</h1> 
-   {% else %} 
-   <h1>➕ Create Course</h1>
-    {% endif %}
+    <div class="cf-card">
 
-
-    <form method="POST">
-
-        {% csrf_token %}
-
-        <div class="form-group">
-
-            <label>
-                Course Title
-            </label>
-
-            <input
-                type="text"
-                name="title"
-                value="{% if update %}{{ course.title }}{% endif %}"
-                required
-            >
-
+        <div class="cf-icon-badge" aria-hidden="true">
+            {% if update %}
+                <svg viewBox="0 0 24 24" fill="none"><path d="M4 20L4.7 16.9L15.3 6.3C15.9 5.7 16.9 5.7 17.5 6.3L17.7 6.5C18.3 7.1 18.3 8.1 17.7 8.7L7.1 19.3L4 20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+            {% else %}
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="1.7"/><path d="M12 8.4V15.6M8.4 12H15.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            {% endif %}
         </div>
 
+        {% if update %}
+            <h1>Update Course</h1>
+            <p class="cf-subtitle">Refine your course title and description.</p>
+        {% else %}
+            <h1>Create Course</h1>
+            <p class="cf-subtitle">Give your new course a title and description to get started.</p>
+        {% endif %}
 
-        <div class="form-group">
 
-            <label>
-                Description
-            </label>
+        <form method="POST" class="cf-form">
 
-            <textarea
-                name="description"
-                rows="7"
-                required
-                >{% if update %}{{ course.description }}{% endif %}</textarea>
-            </textarea>
+            {% csrf_token %}
 
-        </div>
+            <div class="form-group cf-field">
 
-    {% if update %} 
-    <button type="submit">
-         ✏️ Update Course </button>
-          {% else %}
-           <button type="submit">
-             ➕ Create Course 
+                <label for="id_title">
+                    Course Title
+                </label>
+
+                <input
+                    type="text"
+                    name="title"
+                    id="id_title"
+                    class="cf-input"
+                    placeholder="e.g. Complete Web Development"
+                    value="{% if update %}{{ course.title }}{% endif %}"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group cf-field">
+
+                <label for="id_description">
+                    Description
+                </label>
+
+                <textarea
+                    name="description"
+                    id="id_description"
+                    class="cf-textarea"
+                    rows="7"
+                    placeholder="What will students learn in this course?"
+                    required
+                    >{% if update %}{{ course.description }}{% endif %}</textarea>
+
+            </div>
+
+        {% if update %}
+            <button type="submit" class="cf-submit-btn">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20L4.7 16.9L15.3 6.3C15.9 5.7 16.9 5.7 17.5 6.3L17.7 6.5C18.3 7.1 18.3 8.1 17.7 8.7L7.1 19.3L4 20Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                Update Course
             </button>
-             {% endif %}
+        {% else %}
+            <button type="submit" class="cf-submit-btn">
+                <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="8.4" stroke="currentColor" stroke-width="1.7"/><path d="M12 8.4V15.6M8.4 12H15.6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+                Create Course
+            </button>
+        {% endif %}
 
-    </form>
+        </form>
 
 
-    <br>
+        <a href="{% url 'course_list' %}" class="cf-back-link">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15 5L8 12L15 19" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Back to Courses
+        </a>
 
-    <a href="{% url 'course_list' %}">
-        ← Back to Courses
-    </a>
+    </div>
 
 </div>
 
